@@ -12,7 +12,7 @@ def build_embedding_feat_dict(movies, users, genre_to_id):
             'embedding_dim': 4  # 建议添加
         },
         'user_idx': {
-            'vocab_size': int(users['user_id'].nunique()),
+            'vocab_size': max(users['user_id'])+1,
             'embedding_dim': 32
         },
         'occupation': {
@@ -24,7 +24,7 @@ def build_embedding_feat_dict(movies, users, genre_to_id):
             'embedding_dim': 4
         },
         'movie_idx': {
-            'vocab_size': int(movies['movie_idx'].nunique()),
+            'vocab_size': max(movies['movie_idx'])+1,
             'embedding_dim': 32
         }
     }
@@ -56,13 +56,13 @@ def build_embedding_feat_dict(movies, users, genre_to_id):
     # 3. 序列特征
     embedding_feat_dict['sequence'] = {
         'genre_ids': {
-            'vocab_size': len(genre_to_id) + 1,  # +1 for padding
+            'vocab_size': len(genre_to_id)+ 1,  # +1 for padding
             'max_len': int(movies['genre_ids'].apply(len).max()),
             'embedding_dim': 8
         },
         'title': {
             'type': 'text',
-            'max_length': int(movies['title'].str.len().max() * 1.2),  # 动态计算+20%缓冲
+            'max_len': int(movies['title'].str.len().max() * 1.2),  # 动态计算+20%缓冲
             'observed_max': int(movies['title'].str.len().max()),
             'tokenizer': 'bert-base-uncased',  # 指定tokenizer类型
             'embedding_dim': 64
