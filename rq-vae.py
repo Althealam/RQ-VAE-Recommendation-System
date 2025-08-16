@@ -80,7 +80,7 @@ def prepare_dataloader(item_embeddings, batch_size=64):
     dataset = dataset.shuffle(1000).batch(batch_size)
     return dataset
 
-def train_rqvae(item_embeddings, num_epochs=50):
+def train_rqvae(item_embeddings, num_epochs=10):
     # 初始化模型
     rqvae = RQVAE(
         input_dim=128,
@@ -111,22 +111,24 @@ def train_rqvae(item_embeddings, num_epochs=50):
     
     return rqvae
 
-# 加载之前生成的item embeddings
-item_embeddings = np.load('/Users/althealam/Desktop/Code/RQ-VAE-Recommendation-System/data/embeddings/item_embeddings.npy')  # shape: (3706, 128)
 
-# 训练RQ-VAE
-rqvae_model = train_rqvae(item_embeddings)
+if __name__=='__main__':
+    # 加载之前生成的item embeddings
+    item_embeddings = np.load('/Users/althealam/Desktop/Code/RQ-VAE-Recommendation-System/data/embeddings/item_embeddings.npy')  # shape: (3706, 128)
 
-# 获取量化后的表示
-quantized_embeddings, codes = rqvae_model(item_embeddings)
+    # 训练RQ-VAE
+    rqvae_model = train_rqvae(item_embeddings)
 
-# codes就是最终的离散表示，shape: (3706, num_quantizers)
-# 可以用于后续的推荐任务
-print("Quantized codes shape:", codes.shape)
+    # 获取量化后的表示
+    quantized_embeddings, codes = rqvae_model(item_embeddings)
 
-# 保存模型
-rqvae_model.save_weights('rqvae_model_weights.h5')
+    # codes就是最终的离散表示，shape: (3706, num_quantizers)
+    # 可以用于后续的推荐任务
+    print("Quantized codes shape:", codes.shape)
 
-# 加载模型
-loaded_model = RQVAE()
-loaded_model.load_weights('rqvae_model_weights.h5')
+    # 保存模型
+    rqvae_model.save_weights('rqvae_model_weights.weights.h5')
+
+    # 加载模型
+    loaded_model = RQVAE()
+    loaded_model.load_weights('rqvae_model_weights.weights.h5')
