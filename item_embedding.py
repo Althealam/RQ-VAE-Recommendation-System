@@ -22,7 +22,7 @@ class ItemEmbeddingModel(models.Model):
 
         # 2. 类型序列编码器
         self.genre_embed = layers.Embedding(
-            input_dim=feat_dict['sequence']['genre_ids']['vocab_size'],
+            input_dim=feat_dict['sequence']['genre_ids']['vocab_size'], # 电影的类型列表
             output_dim=feat_dict['sequence']['genre_ids']['embedding_dim'],
             mask_zero=True
         )
@@ -33,7 +33,7 @@ class ItemEmbeddingModel(models.Model):
             layers.Dense(16, activation='relu')  # 假设numeric有3个特征
         ])
 
-        # 4. 特征融合
+        # 4. 特征融合（将三个部分的特征拼接在一起，再做非线性映射，输出一个128维的item embedding）
         self.fusion = models.Sequential([
             layers.Dense(128),
             layers.LayerNormalization(),
@@ -70,7 +70,7 @@ class MovieDataset(tf.keras.utils.Sequence):
     def __len__(self):
         return int(np.ceil(len(self.movies) / self.batch_size))
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx): # 取一个batch
         batch = self.movies.iloc[idx*self.batch_size : (idx+1)*self.batch_size]
         
         # movie_idx

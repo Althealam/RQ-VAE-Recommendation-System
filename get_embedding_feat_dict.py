@@ -1,8 +1,9 @@
 import json, pickle
 import pandas as pd
 from collections import OrderedDict
+
 def build_embedding_feat_dict(movies, users, genre_to_id):
-    """构建基于序列建模的特征字典（兼容您的代码风格）"""
+    """构建基于序列建模的特征字典"""
     embedding_feat_dict = OrderedDict()
     
     # 1. 稀疏特征（分类特征）

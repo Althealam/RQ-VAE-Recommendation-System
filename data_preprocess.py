@@ -47,7 +47,7 @@ def preprocess_movielens_1m(data_dir='/Users/althealam/Desktop/Code/RQ-VAE-Recom
     )
     print("评分记录数量为", len(ratings))
 
-    # 2. ID类特征处理
+    # 2. ID类特征处理：将user_id和movie_id转换为从0开始的整数索引
     user_encoder = LabelEncoder()
     movie_encoder = LabelEncoder()
 
